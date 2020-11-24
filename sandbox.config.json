@@ -1,4 +1,8 @@
-
 {
-  "template": "node"
+  "template": "nuxt",
+  "hardReloadOnChange": false,
+  "infiniteLoopProtection": true,
+  "container": {
+    "port": 8080
+  }
 }
