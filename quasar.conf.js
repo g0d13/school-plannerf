@@ -73,8 +73,9 @@ module.exports = function(/* ctx */) {
     devServer: {
       https: false,
       port: 8080,
-      open: false
-      // open: true // opens browser window automatically
+      open: false,
+      // leave this here for Codesandbox to work
+      public: "http://0.0.0.0"
     },
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
