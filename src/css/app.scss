@@ -1,4 +1,8 @@
 // app global css in SCSS form
+
+:root{
+  --calendar-intervals-width: 34px !important;
+}
 body.body--dark {
   background: $dark;
 }

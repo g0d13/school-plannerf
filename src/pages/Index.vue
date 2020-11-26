@@ -28,20 +28,39 @@
     </q-list>
 
     <q-dialog v-model="seamless" seamless position="bottom">
-      <q-card style="width: 350px">
-        <q-linear-progress :value="0.6" color="pink" />
+      <q-card>
+        <q-card-section class="column items-center no-wrap gap-4">
+          <div class="row">
+            <q-avatar color="primary" size="md" text-color="white">P</q-avatar>
+            <div class="q-ml-md">Programacion logica y funcional</div>
+            <q-btn flat round icon="close" v-close-popup />
+          </div>
+          <p class="start q-mt-md">course details</p>
 
-        <q-card-section class="row items-center no-wrap">
-          <div>
-            <div class="text-weight-bold">The Walker</div>
-            <div class="text-grey">Fitz & The Tantrums</div>
+          <div class="row self-start">
+            <q-icon name="o_schedule" size="sm" class="q-mr-md" />
+            <div>
+              <p>Class time</p>
+              <small>9:00 a.m - 11:00 a.m.</small>
+            </div>
           </div>
 
-          <q-space />
+          <div class="row self-start q-mt-sm" >
+            <q-icon name="o_schedule" size="sm" class="q-mr-md" />
+            <div>
+              <p>Course teacher</p>
+              <small>Cristina Joaquin Salas</small>
+            </div>
+          </div>
 
-          <q-btn flat round icon="play_arrow" />
-          <q-btn flat round icon="pause" />
-          <q-btn flat round icon="close" v-close-popup />
+          <div class="row self-start q-mt-sm">
+            <q-icon name="o_schedule" size="sm" class="q-mr-md" />
+            <div>
+              <p>Class notes</p>
+              <small>No class notes</small>
+            </div>
+          </div>
+
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -109,8 +128,8 @@ export default {
   name: "PageIndex",
   data: () => ({
     day: new Date().getDay(),
-    seamless: false,
-  }),
+    seamless: false
+  })
 };
 </script>
 
@@ -129,4 +148,13 @@ p
 
 .mt-50
   margin-top: 50px
+
+.start
+  align-self: flex-start
+  margin-top: 15px
+  margin-bottom: 15px
+  text-transform: uppercase
+  font-size: 11px
+  font-weight: bold
+
 </style>

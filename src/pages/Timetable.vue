@@ -3,14 +3,14 @@
     <q-calendar
       v-model="selectedDate"
       view="week"
-      locale="es"
       animated
       :weekdays="[1, 2, 3, 4, 5]"
       :interval-height="60"
-      :interval-start="6"
+      :interval-start="8"
       :interval-count="9"
       short-interval-label
       short-weekday-label
+      no-default-header-btn
       class="calendar-container"
     >
       <template #day-body="{ timestamp, timeStartPos, timeDurationHeight }">
@@ -21,7 +21,12 @@
             class="my-event justify-center"
             :style="itemStyle(event, 'body', timeStartPos, timeDurationHeight)"
           >
-            <pre>-{{ event.time }}-</pre>
+            <div :style="{background: event.color ? event.color : 'red', height: '100%', borderRadius: '5px' }">
+              <div :style="{paddingLeft: '7px', paddingTop: '7px'}">
+                <p>{{ event.title }}</p>
+                <p>Hola</p>
+              </div>
+            </div>
           </div>
         </template>
       </template>
@@ -49,201 +54,103 @@ export default {
       agenda: {
         1: [
           {
-            time: "06:00",
+            time: "08:00",
             title: "Mi otra conf",
-            duration: 160,
-            avatar: "https://cdn.quasar.dev/img/boy-avatar.png",
+            duration: 60,
             desc: "Meeting with CEO",
+            color: "#ff5252"
           },
           {
-            time: "15:30",
+            time: "9:00",
             title: "Mi otra confv2",
-            avatar: "https://cdn.quasar.dev/img/avatar.png",
             desc: "Meeting with HR",
+            color: "#ff4081",
+            duration: 60
           },
           {
-            time: "12:00",
+            time: "10:00",
             title: "Mi otra confv3",
-            avatar: "https://cdn.quasar.dev/img/avatar1.jpg",
-            desc: "Meeting with Karen",
+            desc: "Meeting",
+            color: "#448aff",
+            duration: 90
           },
         ],
         2: [
           {
-            time: "11:30",
-            avatar: "https://cdn.quasar.dev/img/avatar2.jpg",
-            desc: "Meeting with Alisha",
+            time: "8:00",
+            title: "Meeting with Alisha",
+            color: "#3f51b5",
+            duration: 90
           },
           {
-            time: "17:00",
-            avatar: "https://cdn.quasar.dev/img/avatar3.jpg",
-            desc: "Meeting with Sarah",
+            time: "10:00",
+            title: "Meeting with Sarah",
+            color: "#ff6e40",
+            duration: 60
           },
         ],
         3: [
           {
             time: "08:00",
-            desc: "Stand-up SCRUM",
-            avatar: "https://cdn.quasar.dev/img/material.png",
+            title: "Stand-up SCRUM",
+            duration: 60,
+            color: "#e91e63"
           },
           {
             time: "09:00",
-            avatar: "https://cdn.quasar.dev/img/boy-avatar.png",
+            title: "https://cdn.quasar.dev/img/boy-avatar.png",
+            duration: 60,
+            color: "#673ab7"
           },
           {
             time: "10:00",
-            desc: "Sprint planning",
-            avatar: "https://cdn.quasar.dev/img/material.png",
+            title: "Sprint planning",
+            duration: 60,
+            color:"#4caf50"
           },
           {
-            time: "13:00",
-            avatar: "https://cdn.quasar.dev/img/avatar1.jpg",
+            time: "11:00",
+            title: "Sprint making",
+            duration: 60,
+            color:"#ff9800"
           },
         ],
         4: [
           {
-            time: "09:00",
-            avatar: "https://cdn.quasar.dev/img/avatar3.jpg",
+            time: "8:00",
+            title: "Activity v2",
+            duration: 60,
+            color:"#ff9800"
           },
           {
-            time: "10:00",
-            avatar: "https://cdn.quasar.dev/img/avatar2.jpg",
+            time: "9:00",
+            title: "main activity",
+            duration: 60,
+            color:"#827717"
           },
           {
-            time: "13:00",
+            time: "11:00",
+            title: "Pasos pdf",
+            duration: 60,
             avatar: "https://cdn.quasar.dev/img/material.png",
+            color: "#ff5722"
           },
         ],
         5: [
           {
-            time: "08:00",
-            avatar: "https://cdn.quasar.dev/img/boy-avatar.png",
-          },
-          {
-            time: "09:00",
-            avatar: "https://cdn.quasar.dev/img/avatar2.jpg",
-          },
-          {
-            time: "09:30",
-            avatar: "https://cdn.quasar.dev/img/avatar4.jpg",
+            time: "8:30",
+            title: "Meeting with Alisha",
+            color: "#3f51b5",
+            duration: 90
           },
           {
             time: "10:00",
-            avatar: "https://cdn.quasar.dev/img/avatar5.jpg",
-          },
-          {
-            time: "11:30",
-            avatar: "https://cdn.quasar.dev/img/material.png",
-          },
-          {
-            time: "13:00",
-            avatar: "https://cdn.quasar.dev/img/avatar6.jpg",
-          },
-          {
-            time: "13:30",
-            avatar: "https://cdn.quasar.dev/img/avatar3.jpg",
-          },
-          {
-            time: "14:00",
-            avatar: "https://cdn.quasar.dev/img/linux-avatar.png",
-          },
-          {
-            time: "14:30",
-            avatar: "https://cdn.quasar.dev/img/avatar.png",
-          },
-          {
-            time: "15:00",
-            avatar: "https://cdn.quasar.dev/img/boy-avatar.png",
-          },
-          {
-            time: "15:30",
-            avatar: "https://cdn.quasar.dev/img/avatar2.jpg",
-          },
-          {
-            time: "16:00",
-            avatar: "https://cdn.quasar.dev/img/avatar6.jpg",
+            title: "Meeting with Sarah",
+            color: "#ff6e40",
+            duration: 60
           },
         ],
       },
-      events: [
-        {
-          title: "1st of the Month",
-          details:
-            "Everything is funny as long as it is happening to someone else",
-          date: getCurrentDay(19),
-          time: "15:00",
-          bgcolor: "orange",
-        },
-        {
-          title: "Sisters Birthday",
-          details: "Buy a nice present",
-          date: getCurrentDay(17),
-          duration: 60,
-          time: "11:00",
-          bgcolor: "green",
-          icon: "fas fa-birthday-cake",
-        },
-        {
-          title: "Meeting",
-          details: "Time to pitch my idea to the company",
-          date: getCurrentDay(CURRENT_DAY.getDate()),
-          time: "10:00",
-          bgcolor: "green",
-          icon: "fas fa-handshake",
-        },
-        {
-          title: "Lunch",
-          details: "Company is paying!",
-          date: getCurrentDay(CURRENT_DAY.getDate()),
-          time: "11:00",
-          bgcolor: "teal",
-          icon: "fas fa-hamburger",
-        },
-        {
-          title: "Visit mom",
-          details: "Always a nice chat with mom",
-          date: getCurrentDay(20),
-          time: "17:00",
-          duration: 90,
-          bgcolor: "blue-grey",
-          icon: "fas fa-car",
-        },
-        {
-          title: "Conference",
-          details: "Teaching Javascript 101",
-          date: getCurrentDay(16),
-          time: "16:00",
-          duration: 30,
-          bgcolor: "blue",
-          icon: "fas fa-chalkboard-teacher",
-        },
-        {
-          title: "Girlfriend",
-          details: "Meet GF for dinner at Swanky Restaurant",
-          date: getCurrentDay(18),
-          time: "15:00",
-          duration: 180,
-          bgcolor: "teal",
-          icon: "fas fa-utensils",
-        },
-        {
-          title: "Fishing",
-          details: "Time for some weekend R&R",
-          date: getCurrentDay(19),
-          time: "14:00",
-          bgcolor: "blue",
-          icon: "fas fa-fish",
-        },
-        {
-          title: "Vacation",
-          details:
-            "Trails and hikes, going camping! Don't forget to bring bear spray!",
-          date: getCurrentDay(17),
-          time: "12:00",
-          bgcolor: "red",
-          icon: "fas fa-plane",
-        },
-      ],
     };
   },
   methods: {
@@ -260,9 +167,10 @@ export default {
       if (timeDurationHeight) {
         s.height = timeDurationHeight(event.duration) + "px";
       }
+
       s["align-items"] = "flex-start";
       s["color"] = "white";
-      s["background"] = "red";
+      s["padding"] = "2px"
       return s;
     },
 
@@ -293,4 +201,7 @@ export default {
 .right-side
   left: 50.25%
   width: 49.75%
+
+p
+  margin: 0
 </style>
