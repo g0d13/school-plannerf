@@ -1,9 +1,9 @@
 <template>
   <q-layout view="lHh LpR lFf">
-    <q-header reveal class="bg-dark">
+    <q-header reveal :class="$q.dark.isActive ? 'bg-dark': 'bg-white text-black'">
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="left = !left" />
-        <q-toolbar-title> Good morning, Juan </q-toolbar-title>
+        <q-toolbar-title> Good morning, {{ $auth.user.name.split(" ")[0] }} </q-toolbar-title>
         <q-btn
           dense
           round
@@ -11,6 +11,7 @@
           icon="o_brightness_4"
           @click="$q.dark.toggle()"
         />
+        <q-btn v-if="$auth.isAuthenticated" to="/profile" dense round flat icon="o_person" />
         <q-btn dense round flat icon="more_vert" />
       </q-toolbar>
     </q-header>
@@ -26,12 +27,12 @@
         <q-list>
           <q-item-section class="q-ml-md q-mb-md q-mt-md">
             <q-avatar>
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+              <img :src="$auth.user.picture">
             </q-avatar>
-            <p class="q-mb-none q-mt-md text-bold">Juan Diego Parra Mendez</p>
+            <p class="q-mb-none q-mt-md text-bold">{{ $auth.user.name }}</p>
             <span>Seven semester</span>
           </q-item-section>
-          <template v-for="(menuItem, index) in menuList">
+          <template v-for="(menuItem, index) in listMenuItems">
             <q-item
               :key="index"
               :to="menuItem.path"
@@ -64,7 +65,7 @@ export default {
   data: () => ({
     left: false,
     day: new Date().getDay().toString(),
-    menuList: [
+    listMenuItems: [
       {
         icon: "o_access_time",
         label: "Week overview",
@@ -78,37 +79,22 @@ export default {
       {
         icon: "o_person",
         label: "Teachers",
-        path: "/teacher",
+        path: "/teachers",
       },
       {
         icon: "o_view_agenda",
-        label: "Assignments",
+        label: "Courses",
+        path: "/courses"
       },
       {
         icon: "o_format_align_center",
-        label: "Notes & Checklists",
-      },
-      {
-        icon: "o_calculate",
-        label: "GPA Calculator",
+        label: "Notes",
+        path: "/notes"
       },
       {
         icon: "o_filter_none",
         label: "Semesters",
-      },
-      {
-        icon: "o_feedback",
-        label: "Send Feedback",
-      },
-      {
-        icon: "o_settings",
-        label: "Settings",
-      },
-      {
-        icon: "help",
-        iconColor: "primary",
-        label: "Help",
-        separator: false,
+        path: "/semesters"
       },
     ],
   }),
@@ -116,11 +102,15 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.q-item
+  border-radius: 0 32px 32px 0
+  margin-right: 10px
+
 .active-item
   border-radius: 0 32px 32px 0
   margin-right: 10px
   color: $primary
-  background-color: $primary#{14}
+  background-color: #{$primary}#{20}
 </style>
 
 <style lang="sass">
