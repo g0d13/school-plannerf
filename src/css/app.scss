@@ -2,7 +2,17 @@
 
 :root{
   --calendar-intervals-width: 34px !important;
+  --magic-number: 0.09719; /* tan(11°)/2 */
+	--content-width: 100vw;
+	--skew-padding: calc(var(--content-width) * var(--magic-number));
 }
+
+@media screen and (min-width: 42em) {
+	:root {
+		--content-width: 42em;
+	}
+}
+
 body.body--dark {
   background: $dark;
 }

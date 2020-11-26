@@ -3,13 +3,12 @@ import axios from "axios";
 
 import { boot } from "quasar/wrappers";
 
-export default boot(async ({ Vue }) => {
+export default boot(async ({ app, Vue }) => {
   const baseInstance = axios.create({
     withCredentials: false,
     baseURL: "https://shool-planner.herokuapp.com/"
     // baseURL: "http://localhost:3000"
   });
-
   const authService = Vue.prototype.$auth;
 
   authService.$watch("user", async _loading => {
