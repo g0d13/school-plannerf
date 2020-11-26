@@ -12,11 +12,13 @@ export default boot(async ({ app, Vue }) => {
   const authService = Vue.prototype.$auth;
 
   authService.$watch("user", async _loading => {
-    const token = await authService.getTokenSilently();
-    baseInstance.interceptors.request.use(config => {
-      config.headers["Authorization"] = `Bearer ${token}`;
-      return config;
-    });
+    try {
+      const token = await authService.getTokenSilently();
+      baseInstance.interceptors.request.use(config => {
+        config.headers["Authorization"] = `Bearer ${token}`;
+        return config;
+      });
+    } catch {}
   });
 
   Vue.prototype.$axios = baseInstance;

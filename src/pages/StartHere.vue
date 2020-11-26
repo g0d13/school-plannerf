@@ -3,9 +3,9 @@
     <q-toolbar class="text-white">
       <q-space />
       <div class="row buttons--header" v-if="!$auth.loading">
-        <q-btn flat round dense label="go" to="/home" />
-        <q-btn v-if="!$auth.isAuthenticated"  flat round dense label="sing up" @click="login" />
-        <q-btn v-if="$auth.isAuthenticated" flat round dense label="logout" @click="logout" />
+        <q-btn v-if="$auth.isAuthenticated" flat dense label="go" to="/home" />
+        <q-btn v-if="!$auth.isAuthenticated"  flat dense label="sing up" @click="login" />
+        <q-btn v-if="$auth.isAuthenticated" flat dense label="logout" @click="logout" />
       </div>
     </q-toolbar>
 
@@ -43,7 +43,7 @@ export default {
     // Log the user out
     logout() {
       this.$auth.logout({
-        returnTo: window.location.origin
+        returnTo: ''
       });
     }
   }
