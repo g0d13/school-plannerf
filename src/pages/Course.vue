@@ -4,14 +4,14 @@
       <q-item clickable v-ripple v-for="course in courses" :key="course.id">
         <q-item-section avatar>
           <q-avatar color="primary text-white">
-            {{ course.title[0] }}
+            {{ course.name[0] }}
           </q-avatar>
         </q-item-section>
         <q-item-section>
+          <p>{{ course.name }}</p>
           <small>
             {{ course.code }}
           </small>
-          <p>{{ course.title }}</p>
         </q-item-section>
       </q-item>
     </q-list>
@@ -37,13 +37,13 @@
             <div class="row">
               <q-input
                 bottom-slots
-                v-model="course.title"
+                v-model="course.name"
                 placeholder="Title"
                 dense
                 class="col-12 col-md-6"
               >
                 <template v-slot:before>
-                  <q-icon name="o_person" />
+                  <q-icon name="o_book" />
                 </template>
               </q-input>
               <q-input
@@ -54,36 +54,36 @@
                 class="col-12 col-md-6"
               >
                 <template v-slot:before>
-                  <q-icon name="o_person" />
+                  <q-icon name="code" />
                 </template>
               </q-input>
             </div>
             <div class="row">
-              <q-input
-                bottom-slots
+              <q-select
                 v-model="course.semester"
-                placeholder="Semester"
-                dense
+                :options="semesters"
+                emit-value
+                map-options
                 class="col-12 col-md-6"
               >
                 <template v-slot:before>
-                  <q-icon name="o_tty" />
+                  <q-icon name="o_person" />
                 </template>
-              </q-input>
-              <q-input
-                bottom-slots
+              </q-select>
+              <q-select
                 v-model="course.teacher"
-                placeholder="Email"
-                dense
+                :options="teachers"
+                map-options
+                emit-value
                 class="col-12 col-md-6"
               >
                 <template v-slot:before>
-                  <q-icon name="o_local_post_office" />
+                  <q-icon name="o_person" />
                 </template>
-              </q-input>
+              </q-select>
             </div>
 
-            <pre>{{ courses }}</pre>
+            <pre>{{ course }}</pre>
           </div>
         </q-card-section>
       </q-card>
@@ -102,25 +102,26 @@
 </template>
 
 <script>
+import { mapGetters, mapState, mapActions } from "vuex";
 export default {
   name: "Course",
   async mounted() {
-    const { data } = await this.$axios.get("/courses");
-    this.courses = data;
+    this.getCourses();
   },
   data: () => ({
     text: "",
     dialog: false,
-    courses: [],
     course: {
-      title: "",
-      code: "",
-      color: "",
-      semester: 0,
+      name: "Programacion orientada a negros",
+      code: "BQ4A",
+      color: "#000",
+      semester: -1,
       teacher: 1
-    },
+    }
   }),
-
+  computed: {
+    ...mapState("planner", ["teachers", "semesters", "courses"])
+  },
   methods: {
     handleFabOpen() {
       this.dialog = !this.dialog;
@@ -129,7 +130,8 @@ export default {
         this.$axios.post("/courses", this.course);
       }
     },
-  },
+    ...mapActions("planner", ["getCourses"])
+  }
 };
 </script>
 

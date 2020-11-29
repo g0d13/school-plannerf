@@ -1,9 +1,14 @@
 <template>
   <q-layout view="lHh LpR lFf">
-    <q-header reveal :class="$q.dark.isActive ? 'bg-dark': 'bg-white text-black'">
+    <q-header
+      reveal
+      :class="$q.dark.isActive ? 'bg-dark' : 'bg-white text-black'"
+    >
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="left = !left" />
-        <q-toolbar-title> Good morning, {{ $auth.user.name.split(" ")[0] }} </q-toolbar-title>
+        <q-toolbar-title>
+          Good morning, {{ $auth.user.name.split(" ")[0] }}
+        </q-toolbar-title>
         <q-btn
           dense
           round
@@ -11,7 +16,14 @@
           icon="o_brightness_4"
           @click="$q.dark.toggle()"
         />
-        <q-btn v-if="$auth.isAuthenticated" to="/profile" dense round flat icon="o_person" />
+        <q-btn
+          v-if="$auth.isAuthenticated"
+          to="/profile"
+          dense
+          round
+          flat
+          icon="o_person"
+        />
         <q-btn dense round flat icon="more_vert" />
       </q-toolbar>
     </q-header>
@@ -27,7 +39,7 @@
         <q-list>
           <q-item-section class="q-ml-md q-mb-md q-mt-md">
             <q-avatar>
-              <img :src="$auth.user.picture">
+              <img :src="$auth.user.picture" />
             </q-avatar>
             <p class="q-mb-none q-mt-md text-bold">{{ $auth.user.name }}</p>
             <span>Seven semester</span>
@@ -60,8 +72,17 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "MainLayout",
+  mounted() {
+    this.$q.dark.set("auto");
+    // if (this.getActualSemester == undefined) {
+    //   this.$router.push("/welcome");
+    // }
+  },
+  computed: mapGetters("planner", ["getActualSemester"]),
   data: () => ({
     left: false,
     day: new Date().getDay().toString(),
@@ -69,17 +90,17 @@ export default {
       {
         icon: "o_access_time",
         label: "Week overview",
-        path: "/",
+        path: "/home"
       },
       {
         icon: "o_widgets",
         label: "Timetable",
-        path: "/timetable",
+        path: "/timetable"
       },
       {
         icon: "o_person",
         label: "Teachers",
-        path: "/teachers",
+        path: "/teachers"
       },
       {
         icon: "o_view_agenda",
@@ -95,9 +116,9 @@ export default {
         icon: "o_filter_none",
         label: "Semesters",
         path: "/semesters"
-      },
-    ],
-  }),
+      }
+    ]
+  })
 };
 </script>
 

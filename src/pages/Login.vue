@@ -29,6 +29,9 @@ export default {
   name: "Login",
   computed: {},
   data: () => ({ email: "", password: "" }),
+  mounted() {
+    console.log(this.$store.state.planner);
+  }
 };
 </script>
 

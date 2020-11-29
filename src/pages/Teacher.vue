@@ -83,8 +83,8 @@
               </q-input>
             </div>
             <q-input
-              v-model="teacher.notes"
-              placeholder="Notes"
+              v-model="teacher.description"
+              placeholder="Description"
               autogrow
               type="textarea"
             />
@@ -109,9 +109,8 @@
 <script>
 export default {
   name: "Teacher",
-  async mounted() {
-    const { data } = await this.$axios.get("/teachers");
-    this.teachers = data;
+  mounted() {
+    this.loadData();
   },
   data: () => ({
     text: "",
@@ -122,15 +121,21 @@ export default {
       lastName: "",
       phone: "",
       email: "",
+      description: "",
     },
   }),
 
   methods: {
+    async loadData(){
+      const { data } = await this.$axios.get("/teachers");
+      this.teachers = data;
+    },
     handleFabOpen() {
       this.dialog = !this.dialog;
 
       if (!this.dialog) {
         this.$axios.post("/teachers", this.teacher);
+        this.loadData();
       }
     },
   },

@@ -12,156 +12,213 @@
       short-weekday-label
       no-default-header-btn
       class="calendar-container"
+      @click:time2="onClickDay"
     >
       <template #day-body="{ timestamp, timeStartPos, timeDurationHeight }">
-        <template v-for="(event, index) in getEvents(timestamp)">
+        <template v-for="(event, index) in getEvents(timestamp.weekday)">
           <div
-            v-if="event.time"
+            v-if="event.startTime"
             :key="index"
             class="my-event justify-center"
             :style="itemStyle(event, 'body', timeStartPos, timeDurationHeight)"
           >
-            <div :style="{background: event.color ? event.color : 'red', height: '100%', borderRadius: '5px' }">
-              <div :style="{paddingLeft: '7px', paddingTop: '7px'}">
-                <p>{{ event.title }}</p>
-                <p>Hola</p>
+            <div
+              :style="{
+                background: event.color,
+                height: '100%',
+                borderRadius: '5px'
+              }"
+            >
+              <div :style="{ paddingLeft: '7px', paddingTop: '7px' }">
+                <p>{{ event.name }}</p>
               </div>
             </div>
           </div>
         </template>
       </template>
     </q-calendar>
+    <q-dialog
+      v-model="dialog"
+      maximized
+      transition-show="slide-up"
+      transition-hide="slide-down"
+    >
+      <q-card>
+        <q-card-section>
+          <q-select
+            v-model="schedule.course"
+            :options="courses"
+            label="Select Course"
+            filled
+            map-options
+            emit-value
+            class="col-12 col-md-6"
+          >
+            <template v-slot:before>
+              <q-icon name="o_person" />
+            </template>
+          </q-select>
+        </q-card-section>
+        <q-card-section>
+          <q-input
+            filled
+            v-model="schedule.startTime"
+            mask="time"
+            label="Start Time"
+            :rules="['time']"
+          >
+            <template v-slot:before>
+              <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy transition-show="scale" transition-hide="scale">
+                  <q-time v-model="schedule.startTime">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-time>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+
+          <q-input
+            filled
+            v-model="schedule.endTime"
+            mask="time"
+            label="End Time"
+            :rules="['time']"
+          >
+            <template v-slot:before>
+              <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy transition-show="scale" transition-hide="scale">
+                  <q-time v-model="schedule.endTime">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-time>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+
+          <q-input filled v-model="schedule.day" label="Select day">
+            <template v-slot:before>
+              <q-icon name="o_event" class="cursor-pointer">
+                <q-popup-proxy transition-show="scale" transition-hide="scale">
+                  <q-card>
+                    <q-card-section>
+                      <div v-for="day in days" :key="day">
+                        <q-radio
+                          v-model="schedule.day"
+                          :val="day"
+                          :label="capitalize(day)"
+                          color="cyan"
+                          class="days"
+                        />
+                      </div>
+                    </q-card-section>
+                  </q-card>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          {{ schedule }}
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="OK" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-page-sticky class="z-6k" position="bottom-right" :offset="[18, 18]">
+      <q-btn
+        fab
+        rounded
+        color="primary"
+        :icon="dialog ? 'done' : 'add'"
+        :label="dialog ? undefined : 'new course'"
+        @click="handleFabOpen"
+      />
+    </q-page-sticky>
   </q-page>
 </template>
 
 <script>
 // normally you would not import "all" of QCalendar, but is needed for this example to work with UMD (codepen)
 import QCalendar, { parseDate } from "@quasar/quasar-ui-qcalendar"; // ui is aliased from ''
-
-const CURRENT_DAY = new Date();
-
-function getCurrentDay(day) {
-  const newDay = new Date(CURRENT_DAY);
-  newDay.setDate(day);
-  const tm = parseDate(newDay);
-  return tm.date;
-}
+import { date } from "quasar";
+import ColorRandom from "random-material-color";
 
 export default {
-  data() {
-    return {
-      selectedDate: "",
-      agenda: {
-        1: [
-          {
-            time: "08:00",
-            title: "Mi otra conf",
-            duration: 60,
-            desc: "Meeting with CEO",
-            color: "#ff5252"
-          },
-          {
-            time: "9:00",
-            title: "Mi otra confv2",
-            desc: "Meeting with HR",
-            color: "#ff4081",
-            duration: 60
-          },
-          {
-            time: "10:00",
-            title: "Mi otra confv3",
-            desc: "Meeting",
-            color: "#448aff",
-            duration: 90
-          },
-        ],
-        2: [
-          {
-            time: "8:00",
-            title: "Meeting with Alisha",
-            color: "#3f51b5",
-            duration: 90
-          },
-          {
-            time: "10:00",
-            title: "Meeting with Sarah",
-            color: "#ff6e40",
-            duration: 60
-          },
-        ],
-        3: [
-          {
-            time: "08:00",
-            title: "Stand-up SCRUM",
-            duration: 60,
-            color: "#e91e63"
-          },
-          {
-            time: "09:00",
-            title: "https://cdn.quasar.dev/img/boy-avatar.png",
-            duration: 60,
-            color: "#673ab7"
-          },
-          {
-            time: "10:00",
-            title: "Sprint planning",
-            duration: 60,
-            color:"#4caf50"
-          },
-          {
-            time: "11:00",
-            title: "Sprint making",
-            duration: 60,
-            color:"#ff9800"
-          },
-        ],
-        4: [
-          {
-            time: "8:00",
-            title: "Activity v2",
-            duration: 60,
-            color:"#ff9800"
-          },
-          {
-            time: "9:00",
-            title: "main activity",
-            duration: 60,
-            color:"#827717"
-          },
-          {
-            time: "11:00",
-            title: "Pasos pdf",
-            duration: 60,
-            avatar: "https://cdn.quasar.dev/img/material.png",
-            color: "#ff5722"
-          },
-        ],
-        5: [
-          {
-            time: "8:30",
-            title: "Meeting with Alisha",
-            color: "#3f51b5",
-            duration: 90
-          },
-          {
-            time: "10:00",
-            title: "Meeting with Sarah",
-            color: "#ff6e40",
-            duration: 60
-          },
-        ],
-      },
-    };
-  },
-  methods: {
-    isCssColor(color) {
-      return !!color && !!color.match(/^(#|(rgb|hsl)a?\()/);
-    },
+  async mounted() {
+    const courses = await this.$axios.get("/courses");
+    this.courses = courses.data.map(c => {
+      return { value: c.id, label: c.name };
+    });
+    const schedule = await this.$axios.get("/schedule");
 
+    this.schedules = schedule.data.map(s => {
+      return {
+        startTime: s.startTime,
+        endTime: s.endTime,
+        name: s.course.name,
+        color: this.getRandomColor(s.course.name),
+        duration: 60,
+        day: s.day
+      };
+    });
+  },
+  data: () => ({
+    schedules: [],
+    days: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"],
+    schedule: {
+      course: "",
+      startTime: "",
+      endTime: "",
+      day: "",
+      semester: 1
+    },
+    courses: [],
+    selectedDate: "",
+    dialog: false
+  }),
+  methods: {
+    onClickDay(data) {
+      const timestamp = data.scope.timestamp;
+      const endTime = timestamp.hour + 1;
+      this.dialog = true;
+      this.schedule.day = this.days[timestamp.weekday - 1];
+      this.schedule.startTime =
+        timestamp.hour < 10 ? `0${timestamp.hour}:00` : `${timestamp.hour}:00`;
+      this.schedule.endTime = endTime < 10 ? `0${endTime}:00` : `${endTime}:00`;
+    },
+    getEvents(numberDay) {
+      let actualDay = this.days[numberDay - 1];
+      actualDay = actualDay.toUpperCase();
+      const todayEvents = this.schedules.filter(sh => sh.day == actualDay);
+      return todayEvents;
+    },
+    getRandomColor(text) {
+      return ColorRandom.getColor({ text });
+    },
+    handleFabOpen() {
+      this.dialog = !this.dialog;
+
+      if (!this.dialog) {
+        const sendData = this.schedule;
+        sendData.day = sendData.day.toUpperCase();
+        this.$axios.post("/schedule", sendData);
+      }
+    },
+    capitalize([s1, ...s2]) {
+      return s1 + s2.join("").toLowerCase();
+    },
     itemStyle(event, type, timeStartPos, timeDurationHeight) {
       const s = {};
       if (timeStartPos) {
-        s.top = timeStartPos(event.time) + "px";
+        s.top = timeStartPos(event.startTime) + "px";
       }
 
       if (timeDurationHeight) {
@@ -170,21 +227,15 @@ export default {
 
       s["align-items"] = "flex-start";
       s["color"] = "white";
-      s["padding"] = "2px"
+      s["padding"] = "2px";
+      console.log({ s, event, type, timeStartPos, timeDurationHeight });
       return s;
-    },
-
-    getEvents(dt) {
-      return this.agenda[dt.weekday];
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style lang="sass">
-.calendar-container
-  position: relative
-
 .my-event
   width: 100%
   position: absolute
@@ -204,4 +255,31 @@ export default {
 
 p
   margin: 0
+
+.z-6k
+  z-index: 2700
+
+.calendar-container
+  position: relative
+
+  .q-calendar-daily__day-interval:hover
+    background: rgba(0,0,255,.1)
+
+  .q-calendar-weekly__workweek:hover
+    background: rgba(0,0,255,.1)
+
+  .q-calendar-weekly__day:hover
+    background: rgba(0,0,255,.1)
+
+  .q-calendar-weekly__head-weekday:hover
+    background: rgba(0,0,255,.1)
+
+  .q-calendar-scheduler__day:hover
+    background: rgba(0,0,255,.1)
+
+  .q-calendar-resource__resource-interval:hover
+    background: rgba(0,0,255,.1)
+
+  .q-calendar-daily__day:hover
+    background: rgba(0,0,255,.1)
 </style>

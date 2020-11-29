@@ -1,10 +1,11 @@
-import Vue from "vue";
 import axios from "axios";
 
 import { boot } from "quasar/wrappers";
 
+let axiosInstance;
+
 export default boot(async ({ app, Vue }) => {
-  const baseInstance = axios.create({
+  axiosInstance = axios.create({
     withCredentials: false,
     baseURL: "https://shool-planner.herokuapp.com/"
     // baseURL: "http://localhost:3000"
@@ -14,12 +15,14 @@ export default boot(async ({ app, Vue }) => {
   authService.$watch("user", async _loading => {
     try {
       const token = await authService.getTokenSilently();
-      baseInstance.interceptors.request.use(config => {
+      axiosInstance.interceptors.request.use(config => {
         config.headers["Authorization"] = `Bearer ${token}`;
         return config;
       });
     } catch {}
   });
 
-  Vue.prototype.$axios = baseInstance;
+  Vue.prototype.$axios = axiosInstance;
 });
+
+export { axiosInstance };

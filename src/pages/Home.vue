@@ -69,13 +69,11 @@
       <q-toolbar>
         <q-btn flat round dense icon="map" />
         <q-tabs inline-label align="left" v-model="day" class="scroll-x">
-          <q-tab :ripple="false" :name="0" label="Sunday" />
           <q-tab :ripple="false" :name="1" label="Monday" />
           <q-tab :ripple="false" :name="2" label="Tuesday" />
           <q-tab :ripple="false" :name="3" label="Wednesday" />
           <q-tab :ripple="false" :name="4" label="Thursday" />
           <q-tab :ripple="false" :name="5" label="Friday" />
-          <q-tab :ripple="false" :name="6" label="Saturday" />
         </q-tabs>
       </q-toolbar>
     </q-page-sticky>
@@ -126,6 +124,11 @@
 <script>
 export default {
   name: "Home",
+  async mounted(){
+    const { data } = await this.$axios.get("/schedule");
+      this.schedule = data;
+      console.log(this.schedule)
+  },
   data: () => ({
     day: new Date().getDay(),
     seamless: false
