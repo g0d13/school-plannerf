@@ -7,7 +7,8 @@
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="left = !left" />
         <q-toolbar-title>
-          Good morning, {{ $auth.user.name.split(" ")[0] }}
+          Good {{ new Date().getHours() >= 12 ? "afternoon" : "morning" }},
+          {{ $auth.user.name.split(" ")[0] }}
         </q-toolbar-title>
         <q-btn
           dense

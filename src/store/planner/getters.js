@@ -13,9 +13,10 @@ export function getActualSemester(state) {
   const isBetweenDates = (date1, date2) =>
     date.isBetweenDates(date1, date2, { onlyDate: true });
 
-  const actualSemester = state.semesters.find(se =>
-    isBetweenDates(se.startDate, se.endDate)
-  );
-
-  return actualSemester;
+  return state.semesters.find(se => isBetweenDates(se.startDate, se.endDate));
 }
+
+export const getTask = state => day => {
+  const nameDay = state.days[day];
+  return state.schedule.filter(task => task.day === nameDay);
+};

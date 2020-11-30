@@ -1,8 +1,16 @@
 <template>
   <q-page class="q-pa-md">
     <q-list>
-      <q-item clickable v-ripple v-for="note in notes" :key="note.id" :style="{backgroundColor: note.color}" class="rounded-borders shadow-2">
-        <q-item-section class="q-pa-sm" >
+      <q-item
+        clickable
+        v-ripple
+        v-for="note in notes"
+        :key="note.id"
+        :style="{ backgroundColor: note.color }"
+        class="rounded-borders shadow-2"
+        @click="viewNote(note.id)"
+      >
+        <q-item-section class="q-pa-sm">
           <p>{{ note.title }}</p>
           <small>
             {{ note.content }}
@@ -20,31 +28,31 @@
       <q-card>
         <q-card-section>
           <div class="text-h6 text-center flex">
-            <q-btn round flat icon="close" @click="dialog = false" />
+            <q-btn round flat icon="close" @click="closeDialog" />
             <q-space></q-space>
-            <h6>New Note</h6>
+            <h6>{{ selectedNote ? "View Note" : "New Note" }}</h6>
             <q-space></q-space>
+            <q-btn
+              v-if="selectedNote"
+              round
+              flat
+              icon="o_delete"
+              @click="handleDelete(selectedNote.id)"
+            />
           </div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <div class="column">
+          <div v-if="selectedNote">
+            <h5>{{ selectedNote.title }}</h5>
+            <p>{{ selectedNote.content }}</p>
+          </div>
+          <div v-else class="column">
             <div class="row">
               <q-input
                 bottom-slots
-                v-model="note.courseId"
-                placeholder="First Name"
-                dense
-                class="col-12 col-md-6"
-              >
-                <template v-slot:before>
-                  <q-icon name="o_person" />
-                </template>
-              </q-input>
-              <q-input
-                bottom-slots
                 v-model="note.title"
-                placeholder="Last Name"
+                placeholder="Title"
                 dense
                 class="col-12 col-md-6"
               >
@@ -55,11 +63,10 @@
             </div>
             <q-input
               v-model="note.content"
-              placeholder="Notes"
+              placeholder="Content"
               autogrow
               type="textarea"
             />
-            <pre>{{ notes }}</pre>
           </div>
         </q-card-section>
       </q-card>
@@ -71,49 +78,68 @@
         color="primary"
         :icon="dialog ? 'done' : 'add'"
         :label="dialog ? undefined : 'NEW NOTE'"
-        @click="handleFabOpen"
+        @click="fabAction"
       />
     </q-page-sticky>
   </q-page>
 </template>
 
 <script>
+import { mapGetters, mapState, mapActions } from "vuex";
+import ColorRandom from "random-material-color";
+
 export default {
   name: "Note",
   async mounted() {
-    // const { data } = await this.$axios.get("/notes");
-    // this.teachers = data;
+    this.getNotes();
   },
   data: () => ({
     text: "",
     dialog: false,
-    notes: [
-      {id: "1", courseId: 1, title: "Mi primera nota", content: "mi nota contenido", color: '#e57373'},
-      {id: "2", courseId: 2, title: "Mi segunda nota", content: "mi nota contenido", color: '#ba68c8'},
-      {id: "3", courseId: 2, title: "Mi segunda nota", content: "mi nota contenido", color: '#4dd0e1'},
-      {id: "4", courseId: 2, title: "Mi segunda nota", content: "mi nota contenido", color: '#81c784'}
-    ],
+    selectedNote: undefined,
     note: {
       courseId: "",
       title: "",
       content: "",
-    },
+      color: ""
+    }
   }),
-
-  methods: {
-    handleFabOpen() {
-      this.dialog = !this.dialog;
-
-      if (!this.dialog) {
-        this.$axios.post("/notes", this.notes);
-      }
-    },
+  computed: {
+    ...mapState("planner", ["notes"])
   },
+  methods: {
+    fabAction() {
+      if (this.selectedNote === undefined && this.dialog) {
+        let title = this.note.title;
+        this.note.color = ColorRandom.getColor({ title });
+        this.$axios.post("/notes", this.note);
+      }
+      this.dialog = !this.dialog;
+    },
+    viewNote(id) {
+      this.selectedNote = this.notes.find(n => n.id == id);
+      this.dialog = true;
+    },
+    closeDialog() {
+      if (this.selectedNote !== undefined) {
+        this.selectedNote = undefined;
+      }
+      this.dialog = false;
+    },
+    getColor(text) {
+      ColorRandom.getColor({ text });
+    },
+    handleDelete(id) {
+      this.dialog = false;
+      this.deleteNote(id);
+    },
+    ...mapActions("planner", ["getNotes", "deleteNote"])
+  }
 };
 </script>
 
 <style scoped lang="sass">
-p, small, h6
+p, small, h6, h5
   margin: 0
 .z-6k
   z-index: 2700
