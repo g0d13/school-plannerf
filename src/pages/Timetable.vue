@@ -228,7 +228,6 @@ export default {
       s["align-items"] = "flex-start";
       s["color"] = "white";
       s["padding"] = "2px";
-      console.log({ s, event, type, timeStartPos, timeDurationHeight });
       return s;
     }
   }

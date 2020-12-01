@@ -7,11 +7,15 @@
             {{ teacher.firstName[0] }}
           </q-avatar>
         </q-item-section>
-        <q-item-section>
-          <p>{{ `${teacher.firstName} ${teacher.lastName}` }}</p>
-          <small>
-            {{ teacher.phone ? teacher.phone : "No phone number set" }}
-          </small>
+        <q-item-section class="teacher--item">
+          <div>
+            <p>{{ `${teacher.firstName} ${teacher.lastName}` }}</p>
+            <small>
+              {{ teacher.phone ? teacher.phone : "No phone number set" }}
+            </small>
+          </div>
+          <q-space />
+          <q-btn icon="delete" flat round />
         </q-item-section>
       </q-item>
     </q-list>
@@ -147,4 +151,7 @@ p, small, h6
   margin: 0
 .z-6k
   z-index: 2700
+
+.teacher--item
+  flex-direction: row !important
 </style>

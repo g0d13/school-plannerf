@@ -112,10 +112,10 @@ export default {
     text: "",
     dialog: false,
     course: {
-      name: "Programacion orientada a negros",
-      code: "BQ4A",
-      color: "#000",
-      semester: -1,
+      name: "",
+      code: "",
+      color: "",
+      semester: 1,
       teacher: 1
     }
   }),

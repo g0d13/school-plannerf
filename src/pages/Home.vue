@@ -114,7 +114,6 @@ export default {
   name: "Home",
   mounted() {
     this.getSchedule()
-    console.log(this.getTask(this.day))
   },
   data: () => ({
     day: new Date().getDay(),
@@ -128,7 +127,6 @@ export default {
     ...mapActions('planner', ['getSchedule']),
     onTabAction(id){
       this.day = id
-      console.log('changing to ', id, this.days[id], this.getTask(id))
     },
     capitalize(day) {
       let [s1, ...s2] = this.days[day];

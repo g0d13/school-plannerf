@@ -7,10 +7,12 @@
         v-ripple
         v-for="semester in semesters"
         :key="semester.id"
-        :class="{ 'bg-primary': semester.id == getActualSemester }"
+        :class="{ 'bg-primary': semester.id === getActualSemester }"
       >
-        <q-item-section v-on:click="setActualSemester(semester.id)">
+        <q-item-section v-on:click="setActualSemester(semester.id)" class="semester">
           <p>{{ semester.name }}</p>
+          <q-space />
+          <q-btn flat icon="delete"></q-btn>
         </q-item-section>
       </q-item>
     </q-list>
@@ -142,4 +144,6 @@ p, small, h5, h6
   margin: 0
 .z-6k
   z-index: 2700
+.semester
+  flex-direction: row
 </style>

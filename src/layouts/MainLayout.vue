@@ -25,7 +25,15 @@
           flat
           icon="o_person"
         />
-        <q-btn dense round flat icon="more_vert" />
+        <q-btn dense round flat icon="more_vert" >
+          <q-menu>
+            <q-list style="min-width: 100px">
+              <q-item clickable v-close-popup @click="$auth.logout()">
+                <q-item-section>Logout</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
       </q-toolbar>
     </q-header>
     <q-drawer
