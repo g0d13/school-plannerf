@@ -91,7 +91,7 @@ import ColorRandom from "random-material-color";
 export default {
   name: "Note",
   async mounted() {
-    this.getNotes();
+    await this.getNotes();
   },
   data: () => ({
     text: "",
@@ -105,7 +105,8 @@ export default {
     }
   }),
   computed: {
-    ...mapState("planner", ["notes"])
+    ...mapState("notes", ["notes"]),
+    ...mapGetters("notes", ['getNoteById'])
   },
   methods: {
     fabAction() {
@@ -117,7 +118,7 @@ export default {
       this.dialog = !this.dialog;
     },
     viewNote(id) {
-      this.selectedNote = this.notes.find(n => n.id == id);
+      this.selectedNote = this.getNoteById(id);
       this.dialog = true;
     },
     closeDialog() {
@@ -133,7 +134,7 @@ export default {
       this.dialog = false;
       this.deleteNote(id);
     },
-    ...mapActions("planner", ["getNotes", "deleteNote"])
+    ...mapActions("notes", ["getNotes", "deleteNote"])
   }
 };
 </script>

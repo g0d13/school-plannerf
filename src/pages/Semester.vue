@@ -12,7 +12,7 @@
         <q-item-section v-on:click="setActualSemester(semester.id)" class="semester">
           <p>{{ semester.name }}</p>
           <q-space />
-          <q-btn flat icon="delete"></q-btn>
+          <q-btn round @click="deleteSemester(semester.id)" flat icon="delete"></q-btn>
         </q-item-section>
       </q-item>
     </q-list>
@@ -122,8 +122,8 @@ export default {
     }
   }),
   computed: {
-    ...mapGetters("planner", ["getActualSemester"]),
-    ...mapState("planner", ["semesters"])
+    ...mapGetters("semester", ["getActualSemester"]),
+    ...mapState("semester", ["semesters"])
   },
   methods: {
     handleFabOpen() {
@@ -133,8 +133,8 @@ export default {
         this.postSemester(this.semester);
       }
     },
-    ...mapActions("planner", ["getSemesters", "postSemester"]),
-    ...mapMutations("planner", ["setActualSemester"])
+    ...mapActions("semester", ["getSemesters", "postSemester", "deleteSemester"]),
+    ...mapMutations("semester", ["setActualSemester"])
   }
 };
 </script>
