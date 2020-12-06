@@ -135,6 +135,9 @@ export default {
 
       if (!this.dialog) {
         this.postSemester(this.semester);
+        if(this.semesters.length === 1){
+          this.setActualSemester(this.semesters[0])
+        }
       }
     },
     ...mapActions("semester", ["getSemesters", "postSemester", "deleteSemester"]),
