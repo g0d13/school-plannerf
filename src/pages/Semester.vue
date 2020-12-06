@@ -88,8 +88,6 @@
                 </template>
               </q-input>
             </div>
-
-            <pre>{{ semesters }}</pre>
           </div>
         </q-card-section>
       </q-card>
