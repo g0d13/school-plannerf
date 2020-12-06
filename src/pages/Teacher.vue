@@ -15,7 +15,7 @@
             </small>
           </div>
           <q-space />
-          <q-btn icon="delete" flat round />
+          <q-btn icon="delete" @click="deleteTeacher(teacher.id)" flat round />
         </q-item-section>
       </q-item>
     </q-list>
@@ -111,15 +111,16 @@
 </template>
 
 <script>
+import {mapActions, mapState} from "vuex";
+
 export default {
   name: "Teacher",
   mounted() {
-    this.loadData();
+    this.getTeachers();
   },
   data: () => ({
     text: "",
     dialog: false,
-    teachers: [],
     teacher: {
       firstName: "",
       lastName: "",
@@ -130,19 +131,18 @@ export default {
   }),
 
   methods: {
-    async loadData(){
-      const { data } = await this.$axios.get("/teachers");
-      this.teachers = data;
-    },
     handleFabOpen() {
       this.dialog = !this.dialog;
 
       if (!this.dialog) {
-        this.$axios.post("/teachers", this.teacher);
-        this.loadData();
+        this.postTeacher(this.teacher);
       }
     },
+    ...mapActions('teacher', ['getTeachers', 'postTeacher', 'deleteTeacher'])
   },
+  computed: {
+    ...mapState('teacher', ['teachers'])
+  }
 };
 </script>
 

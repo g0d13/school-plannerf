@@ -26,12 +26,15 @@
               :style="{
                 background: event.color,
                 height: '100%',
-                borderRadius: '5px'
+                borderRadius: '5px',
+                display: 'grid',
+                placeItems: 'center'
               }"
             >
               <div :style="{ paddingLeft: '7px', paddingTop: '7px' }">
-                <p>{{ event.name }}</p>
+                <p>{{ getCourseName(event) }}</p>
               </div>
+              <q-btn round flat icon="delete" @click.stop="deleteSchedule(event.id)"></q-btn>
             </div>
           </div>
         </template>
@@ -47,7 +50,7 @@
         <q-card-section>
           <q-select
             v-model="schedule.course"
-            :options="courses"
+            :options="filterCourses"
             label="Select Course"
             filled
             map-options
@@ -55,7 +58,7 @@
             class="col-12 col-md-6"
           >
             <template v-slot:before>
-              <q-icon name="o_person" />
+              <q-icon name="o_person"/>
             </template>
           </q-select>
         </q-card-section>
@@ -72,7 +75,7 @@
                 <q-popup-proxy transition-show="scale" transition-hide="scale">
                   <q-time v-model="schedule.startTime">
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
+                      <q-btn v-close-popup label="Close" color="primary" flat/>
                     </div>
                   </q-time>
                 </q-popup-proxy>
@@ -92,7 +95,7 @@
                 <q-popup-proxy transition-show="scale" transition-hide="scale">
                   <q-time v-model="schedule.endTime">
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
+                      <q-btn v-close-popup label="Close" color="primary" flat/>
                     </div>
                   </q-time>
                 </q-popup-proxy>
@@ -128,7 +131,7 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="OK" color="primary" v-close-popup />
+          <q-btn flat label="OK" color="primary" v-close-popup/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -147,32 +150,22 @@
 
 <script>
 // normally you would not import "all" of QCalendar, but is needed for this example to work with UMD (codepen)
-import QCalendar, { parseDate } from "@quasar/quasar-ui-qcalendar"; // ui is aliased from ''
-import { date } from "quasar";
 import ColorRandom from "random-material-color";
+import {mapActions, mapState} from "vuex";
 
 export default {
-  async mounted() {
-    const courses = await this.$axios.get("/courses");
-    this.courses = courses.data.map(c => {
-      return { value: c.id, label: c.name };
+  mounted() {
+    this.getCourses();
+    this.filterCourses = this.courses.map(c => {
+      return {value: c.id, label: c.name};
     });
-    const schedule = await this.$axios.get("/schedule");
-
-    this.schedules = schedule.data.map(s => {
-      return {
-        startTime: s.startTime,
-        endTime: s.endTime,
-        name: s.course.name,
-        color: this.getRandomColor(s.course.name),
-        duration: 60,
-        day: s.day
-      };
-    });
+    this.getSchedules();
+  },
+  computed: {
+    ...mapState('timetable', ['days', 'schedules']),
+    ...mapState('course', ['courses'])
   },
   data: () => ({
-    schedules: [],
-    days: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"],
     schedule: {
       course: "",
       startTime: "",
@@ -180,7 +173,7 @@ export default {
       day: "",
       semester: 1
     },
-    courses: [],
+    filterCourses: [],
     selectedDate: "",
     dialog: false
   }),
@@ -197,11 +190,20 @@ export default {
     getEvents(numberDay) {
       let actualDay = this.days[numberDay - 1];
       actualDay = actualDay.toUpperCase();
-      const todayEvents = this.schedules.filter(sh => sh.day == actualDay);
-      return todayEvents;
+      return this.schedules.filter(sh => sh.day === actualDay)
+        .map(el => ({...el, color: this.getRandomColor(el.course.name), name: el.course.name}));
+    },
+    getCourseName(id) {
+      console.log(id)
+      if (id.course.name === undefined) {
+        let nombre = this.courses.find(c => c.id === id).name
+        console.log('el courso es undefined', {id}, {courses: this.courses, nombre})
+        return nombre;
+      }
+      return id.course.name;
     },
     getRandomColor(text) {
-      return ColorRandom.getColor({ text });
+      return ColorRandom.getColor({text});
     },
     handleFabOpen() {
       this.dialog = !this.dialog;
@@ -209,27 +211,35 @@ export default {
       if (!this.dialog) {
         const sendData = this.schedule;
         sendData.day = sendData.day.toUpperCase();
-        this.$axios.post("/schedule", sendData);
+        this.postSchedule(sendData)
       }
     },
     capitalize([s1, ...s2]) {
       return s1 + s2.join("").toLowerCase();
+    },
+    getDuration(event1, event2) {
+      let timeStart = new Date("01/01/2007 " + event1).getHours();
+      let timeEnd = new Date("01/01/2007 " + event2).getHours();
+      let hourDiff = timeEnd - timeStart;
+      return hourDiff * 60;
     },
     itemStyle(event, type, timeStartPos, timeDurationHeight) {
       const s = {};
       if (timeStartPos) {
         s.top = timeStartPos(event.startTime) + "px";
       }
-
+      let duration = this.getDuration(event.startTime, event.endTime);
       if (timeDurationHeight) {
-        s.height = timeDurationHeight(event.duration) + "px";
+        s.height = timeDurationHeight(duration) + "px";
       }
 
       s["align-items"] = "flex-start";
       s["color"] = "white";
       s["padding"] = "2px";
       return s;
-    }
+    },
+    ...mapActions('timetable', ['postSchedule', 'deleteSchedule', 'getSchedules']),
+    ...mapActions('course', ['getCourses']),
   }
 };
 </script>
@@ -262,23 +272,23 @@ p
   position: relative
 
   .q-calendar-daily__day-interval:hover
-    background: rgba(0,0,255,.1)
+    background: rgba(0, 0, 255, .1)
 
   .q-calendar-weekly__workweek:hover
-    background: rgba(0,0,255,.1)
+    background: rgba(0, 0, 255, .1)
 
   .q-calendar-weekly__day:hover
-    background: rgba(0,0,255,.1)
+    background: rgba(0, 0, 255, .1)
 
   .q-calendar-weekly__head-weekday:hover
-    background: rgba(0,0,255,.1)
+    background: rgba(0, 0, 255, .1)
 
   .q-calendar-scheduler__day:hover
-    background: rgba(0,0,255,.1)
+    background: rgba(0, 0, 255, .1)
 
   .q-calendar-resource__resource-interval:hover
-    background: rgba(0,0,255,.1)
+    background: rgba(0, 0, 255, .1)
 
   .q-calendar-daily__day:hover
-    background: rgba(0,0,255,.1)
+    background: rgba(0, 0, 255, .1)
 </style>

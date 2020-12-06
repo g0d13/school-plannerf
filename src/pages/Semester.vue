@@ -7,7 +7,7 @@
         v-ripple
         v-for="semester in semesters"
         :key="semester.id"
-        :class="{ 'bg-primary': semester.id === getActualSemester }"
+        :class="{ 'bg-primary': semester.id == getActualSemester }"
       >
         <q-item-section v-on:click="setActualSemester(semester.id)" class="semester">
           <p>{{ semester.name }}</p>
@@ -60,26 +60,31 @@
               </q-input>
             </div>
             <div class="row">
-              <q-input
-                bottom-slots
-                v-model="semester.startDate"
-                placeholder="Start date"
-                dense
-                class="col-12 col-md-6"
-              >
+              <q-input v-model="semester.startDate" label="Start of the semester"  class="col-12 col-md-6">
                 <template v-slot:before>
-                  <q-icon name="o_tty" />
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-date v-model="semester.startDate"  mask="YYYY-MM-DD" >
+                          <q-btn v-close-popup label="Close" color="primary" flat />
+                        <div class="row items-center justify-end">
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
                 </template>
               </q-input>
-              <q-input
-                bottom-slots
-                v-model="semester.endDate"
-                placeholder="End date"
-                dense
-                class="col-12 col-md-6"
-              >
+
+              <q-input v-model="semester.endDate" label="End of semester" class="col-12 col-md-6">
                 <template v-slot:before>
-                  <q-icon name="o_local_post_office" />
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-date v-model="semester.endDate" mask="YYYY-MM-DD" >
+                        <q-btn v-close-popup label="Close" color="primary" flat />
+                        <div class="row items-center justify-end">
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
                 </template>
               </q-input>
             </div>
@@ -109,7 +114,6 @@ export default {
   name: "Semester",
   mounted() {
     this.getSemesters();
-    console.log(this.getActualSemester);
   },
   data: () => ({
     text: "",

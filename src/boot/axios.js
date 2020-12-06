@@ -7,8 +7,8 @@ let axiosInstance;
 export default boot(async ({ app, Vue }) => {
   axiosInstance = axios.create({
     withCredentials: false,
-    baseURL: "https://shool-planner.herokuapp.com/"
-    // baseURL: "http://localhost:3000"
+    // baseURL: "https://shool-planner.herokuapp.com/"
+    baseURL: "http://localhost:3000"
   });
   const authService = Vue.prototype.$auth;
 

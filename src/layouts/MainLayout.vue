@@ -51,7 +51,7 @@
               <img :src="$auth.user.picture" />
             </q-avatar>
             <p class="q-mb-none q-mt-md text-bold">{{ $auth.user.name }}</p>
-            <span>Seven semester</span>
+            <span>{{ getSemesterName() }}</span>
           </q-item-section>
           <template v-for="(menuItem, index) in listMenuItems">
             <q-item
@@ -81,17 +81,23 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import {mapGetters, mapState} from "vuex";
 
 export default {
   name: "MainLayout",
   mounted() {
     this.$q.dark.set("auto");
-    // if (this.getActualSemester == undefined) {
-    //   this.$router.push("/welcome");
-    // }
   },
-  computed: mapGetters("planner", ["getActualSemester"]),
+  computed: {
+    ...mapGetters("semester", ["getActualSemester"]),
+    ...mapState('semester', ['semesters'])
+  },
+  methods: {
+    getSemesterName(){
+      const name = this.semesters.find(se => se.id === this.getActualSemester)?.name || 'Select a semester';
+      return name;
+    }
+  },
   data: () => ({
     left: false,
     day: new Date().getDay().toString(),

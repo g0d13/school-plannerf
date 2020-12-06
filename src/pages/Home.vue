@@ -74,7 +74,7 @@
       <q-toolbar>
         <q-btn flat round dense icon="map"/>
         <q-tabs inline-label align="left" v-model="day" class="scroll-x">
-          <q-tab v-for="(day, index) in days" :ripple="false" :name="index" :label="day" :key="index" @click="onTabAction(index)"/>
+          <q-tab v-for="(actualDay, index) in days" :ripple="false" :name="index" :label="actualDay" :key="index" @click="onTabAction(index)"/>
         </q-tabs>
       </q-toolbar>
     </q-page-sticky>
@@ -113,18 +113,18 @@ import ColorRandom from "random-material-color";
 export default {
   name: "Home",
   mounted() {
-    this.getSchedule()
+    this.getSchedules()
   },
   data: () => ({
     day: new Date().getDay(),
     seamless: false
   }),
   computed: {
-    ...mapGetters('planner', ["getTask"]),
-    ...mapState('planner', ['days'])
+    ...mapGetters('timetable', ["getTask"]),
+    ...mapState('timetable', ['days'])
   },
   methods: {
-    ...mapActions('planner', ['getSchedule']),
+    ...mapActions('timetable', ['getSchedules']),
     onTabAction(id){
       this.day = id
     },

@@ -113,7 +113,7 @@ export default {
       if (this.selectedNote === undefined && this.dialog) {
         let title = this.note.title;
         this.note.color = ColorRandom.getColor({ title });
-        this.$axios.post("/notes", this.note);
+        this.postNote(this.note)
       }
       this.dialog = !this.dialog;
     },
@@ -132,9 +132,10 @@ export default {
     },
     handleDelete(id) {
       this.dialog = false;
+      this.selectedNote = undefined;
       this.deleteNote(id);
     },
-    ...mapActions("notes", ["getNotes", "deleteNote"])
+    ...mapActions("notes", ["getNotes", "deleteNote", "postNote"])
   }
 };
 </script>

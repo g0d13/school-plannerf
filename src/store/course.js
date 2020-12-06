@@ -27,11 +27,11 @@ export default {
       const { data } = await axiosInstance.get("/courses");
       context.commit("setItems", data);
     },
-    postCourses(context, data) {
+    postCourse(context, data) {
       axiosInstance.post("/courses", data);
       context.commit("setItems", data);
     },
-    deleteNote(context, id) {
+    deleteCourse(context, id) {
       axiosInstance.delete(`/courses/${id}`);
       context.commit("deleteCourse", id);
     }

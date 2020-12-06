@@ -1,5 +1,4 @@
 import { axiosInstance } from "src/boot/axios";
-import { date } from "quasar";
 
 export default {
   namespaced: true,
@@ -9,20 +8,21 @@ export default {
   }),
   getters: {
     getActualSemester(state) {
-      if (state.actualSemester !== 0) {
-        return state.actualSemester;
+      if (localStorage.getItem("actualSemester")) {
+        if (state.actualSemester > 0) {
+          return state.actualSemester;
+        } else {
+          return parseInt(localStorage.getItem("actualSemester"));
+        }
       }
-
-      const isBetweenDates = (date1, date2) =>
-        date.isBetweenDates(date1, date2, { onlyDate: true });
-
-      return state.semesters.find(se =>
-        isBetweenDates(se.startDate, se.endDate)
-      );
+      return state.actualSemester;
     }
   },
   mutations: {
     setActualSemester(state, semesterId) {
+      let toString = semesterId.toString();
+      console.log(typeof toString);
+      localStorage.setItem("actualSemester", semesterId + "");
       state.actualSemester = semesterId;
     },
     setItems(state, data) {

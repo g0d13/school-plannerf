@@ -27,8 +27,8 @@ export default {
       const { data } = await axiosInstance.get("/notes");
       context.commit("setItems", data);
     },
-    postNotes(context, data) {
-      axiosInstance.post("/semesters", data);
+    postNote(context, data) {
+      axiosInstance.post("/note", data);
       context.commit("setItems", data);
     },
     deleteNote(context, id) {
