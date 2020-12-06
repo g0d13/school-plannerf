@@ -87,8 +87,6 @@
                 </template>
               </q-select>
             </div>
-
-            <pre>{{ course }}</pre>
           </div>
         </q-card-section>
       </q-card>

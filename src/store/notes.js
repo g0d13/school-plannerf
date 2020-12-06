@@ -28,7 +28,7 @@ export default {
       context.commit("setItems", data);
     },
     postNote(context, data) {
-      axiosInstance.post("/note", data);
+      axiosInstance.post("/notes", data);
       context.commit("setItems", data);
     },
     deleteNote(context, id) {

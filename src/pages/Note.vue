@@ -54,7 +54,7 @@
                 v-model="note.title"
                 placeholder="Title"
                 dense
-                class="col-12 col-md-6"
+                class="col-12"
               >
                 <template v-slot:before>
                   <q-icon name="o_person" />

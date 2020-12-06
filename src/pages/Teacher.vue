@@ -92,7 +92,6 @@
               autogrow
               type="textarea"
             />
-            <pre>{{ teachers }}</pre>
           </div>
         </q-card-section>
       </q-card>
